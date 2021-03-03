@@ -18,28 +18,24 @@ fire_data = json.load(infile)
 
 #Formats data to make it more readable
 
-json.dump(fire_data,outfile,indent=4)
+#json.dump(fire_data,outfile,indent=4)
 
 #print(eq_data.get("features")[0].get("properties").get("mag"))
 #print(eq_data['features'][0]["properties"]["mag"])
 
-list_of_fires = fire_data[]
+list_of_fires = [i for i in fire_data]
 
-brights, lons, lats, = [],[],[]
+brights, lons, lats = [],[],[]
 
 for fire in list_of_fires:
-    bright = fire['properties']['mag']
+    bright = fire['brightness']
     lon = fire['longitude']
     lat = fire['latitude']
+    if bright>450:
+        brights.append(bright)
+        lons.append(lon)
+        lats.append(lat)
 
-    hover_texts.append(hover_text)
-    mags.append(mag)
-    lons.append(lon)
-    lats.append(lat)
-
-print(mags[:10])
-print(lons[:10])
-print(lats[:10])
 
 
 from plotly.graph_objs import Scattergeo, Layout
@@ -49,20 +45,21 @@ data = [{
     'type':'scattergeo',
     'lon':lons,
     'lat':lats,
-    'text':hover_texts,
+#    'text':hover_texts,
     'marker':{
-        'size':[5*mag for mag in mags],
-        'color':mags,
+        'size':[bright/30 for bright in brights],
+        'color':brights,
         'colorscale':'Viridis',
         'reversescale':True,
-        'colorbar':{'title':'Magnitude'}
+        'colorbar':{'title':'Brightness'}
     }
 
 
 }]
 
-my_layout = Layout(title='Global Earthquakes')
+my_layout = Layout(title='US Fires - 9/1/2020 through 9/13/2020')
 
 fig = {'data':data,'layout':my_layout}
 
-offline.plot(fig, filename='global_earthquakes.html')
+offline.plot(fig, filename='US_Fires_9_1.html')
+
